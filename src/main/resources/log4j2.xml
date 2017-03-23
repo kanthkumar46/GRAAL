@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <!--uncomment below logger to enable debug level logging, use it only for testing-->
+
+        <!--<logger name="com.orca" level="debug" additivity="false">-->
+            <!--<AppenderRef ref="console"/>-->
+        <!--</logger>-->
+        <Root level="info">
+            <AppenderRef ref="console"/>
+        </Root>
+    </Loggers>
+</Configuration>

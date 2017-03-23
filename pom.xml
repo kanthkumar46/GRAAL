@@ -4,15 +4,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.rit.graphaligner</groupId>
-    <artifactId>Graal</artifactId>
+    <groupId>com.rit.capstone</groupId>
+    <artifactId>graphaligner</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
         <commons-lang3.version>3.5</commons-lang3.version>
         <commons-io.version>2.5</commons-io.version>
         <immutables.version>2.4.3</immutables.version>
         <javaslang.version>2.1.0-alpha</javaslang.version>
+        <antlr4.version>4.6</antlr4.version>
+        <libraries-support.version>1.0-SNAPSHOT</libraries-support.version>
+        <orbitcounter.version>1.0-SNAPSHOT</orbitcounter.version>
         <junit.version>4.12</junit.version>
+        <log4j.version>2.3</log4j.version>
     </properties>
 
     <dependencies>
@@ -37,9 +41,34 @@
             <version>${javaslang.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>${antlr4.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rit.capstone</groupId>
+            <artifactId>libraries-support</artifactId>
+            <version>${libraries-support.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rit.capstone</groupId>
+            <artifactId>orbitcounter</artifactId>
+            <version>${orbitcounter.version}</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
         </dependency>
     </dependencies>
 
@@ -58,6 +87,22 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>${antlr4.version}</version>
+                <executions>
+                    <execution>
+                        <id>antlr</id>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${basedir}/src/main/resources</sourceDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
