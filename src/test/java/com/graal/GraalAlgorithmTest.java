@@ -11,7 +11,7 @@ public class GraalAlgorithmTest extends TestSetup{
     private GraalAlgorithm graalAlgorithm = new GraalAlgorithm();
 
     @Test
-    public void AlgorithmTest(){
+    public void AlgorithmTest1(){
         String testcode1 = "class Odd {\n" +
                 "\tpublic int countOdd(int[] input) {\n" +
                 "\t\tint oddCount = 0;\n" +
@@ -35,6 +35,37 @@ public class GraalAlgorithmTest extends TestSetup{
                 "\t\treturn evenCount;\n" +
                 "\t}" +
                 "}";
+
+        String javaCode1 = "class Test{public static void main(String args[]){ int i=0; System.out.println(i);} public void nothing() {String st = 's';System.out.println(st);}}";
+        String javaCode2 = "class Test{public static void main(String args[]){ int i=0; System.out.println(i);} public void nothing() {String st = 's';System.out.println(st);}}";
+
+
+        PDGGenerator pdgGenerator = ImmutablePDGGenerator.of();
+        PDGraph original = pdgGenerator.createPDG(testcode1 , 0);
+        PDGraph suspect = pdgGenerator.createPDG(testcode2, 0);
+
+        graalAlgorithm.execute(original, suspect);
+    }
+
+    @Test
+    public void AlgorithmTest2(){
+        String testcode1 = "class Test {" +
+                "public static void main(String args[]) { " +
+                "int i=0; System.out.println(i);" +
+                "} " +
+                "public void nothing() {" +
+                "String st = 's';System.out.println(st);" +
+                "}" +
+                "}";
+        String testcode2 = "class Test {" +
+                "public static void main(String args[]) { " +
+                "int i=0; System.out.println(i);" +
+                "} " +
+                "public void nothing() {" +
+                "String st = 's';System.out.println(st);" +
+                "}" +
+                "}";
+
         PDGGenerator pdgGenerator = ImmutablePDGGenerator.of();
         PDGraph original = pdgGenerator.createPDG(testcode1 , 0);
         PDGraph suspect = pdgGenerator.createPDG(testcode2, 0);

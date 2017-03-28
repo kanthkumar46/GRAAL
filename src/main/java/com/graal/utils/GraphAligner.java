@@ -5,16 +5,23 @@ import com.graal.graphs.types.VertexType;
 import com.immutablessupport.styles.SingletonStyle;
 import com.jgraphtsupport.AbstractEdge;
 import com.jgraphtsupport.AbstractVertex;
-import javaslang.*;
+import javaslang.Function2;
+import javaslang.Function3;
+import javaslang.Tuple;
+import javaslang.Tuple2;
+import javaslang.Tuple3;
 import javaslang.collection.Array;
+import javaslang.collection.Map;
 import org.immutables.value.Value;
 import org.jgrapht.UndirectedGraph;
 
-import java.util.Comparator;
 import java.util.Set;
 
 import static com.jgraphtsupport.GraphUtils.getMaxDegree;
-import static java.lang.Math.*;
+import static java.lang.Math.abs;
+import static java.lang.Math.log;
+import static java.lang.Math.max;
+import static java.util.Comparator.comparingDouble;
 
 /**
  * Created by KanthKumar on 3/13/17.
@@ -57,17 +64,17 @@ public abstract class GraphAligner {
         return o.stream().flatMap(u -> s.stream().map(v -> Tuple.of(u, v)))
                 .map(tuple -> Tuple.of(tuple._1, tuple._2, costFunction.tupled().apply(tuple)))
                 .collect(Array.collector())
-                .sorted(Comparator.comparingDouble(tuple -> tuple._3));
+                .sorted(comparingDouble(tuple -> tuple._3));
     }
 
-    public Array<Tuple3<PDGVertex, PDGVertex, Double>>
+    public Map<Tuple2<PDGVertex, PDGVertex>, Double>
     PDGAligningCosts(final double beta, final Array<Tuple3<PDGVertex, PDGVertex, Double>> originalAligningCosts) {
-        Function2<Double, Double, Double> newCost = (originalCost, typeSimilarity) ->
-                beta * originalCost + (1 - beta) * typeSimilarity;
+        Function2<Double, Double, Double> newCost = (originalCost, penalty) ->
+                beta * originalCost + (1 - beta) * penalty;
 
         return originalAligningCosts
                 .map(tuple ->  tuple.map3(cost -> newCost.apply(cost, VertexType.getPenalty(tuple._1, tuple._2))))
-                .sorted(Comparator.comparingDouble(tuple -> tuple._3));
+                .toMap(tuple -> Tuple.of(tuple._1, tuple._2), tuple -> tuple._3);
     }
 
     /**

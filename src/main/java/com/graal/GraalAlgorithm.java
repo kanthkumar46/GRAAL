@@ -9,69 +9,147 @@ import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.Tuple3;
 import javaslang.collection.Array;
+import javaslang.collection.HashMap;
+import javaslang.collection.Map;
+import javaslang.collection.Seq;
+import javaslang.collection.Set;
 import javaslang.control.Option;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm.SingleSourcePaths;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
 import static com.graal.graphs.types.VertexType.MAX_PENALTY;
+import static java.util.Comparator.comparingDouble;
 
 /**
  * Created by KanthKumar on 3/16/17.
  */
 public class GraalAlgorithm {
     private GraphAligner graphAligner = ImmutableGraphAligner.of();
+
     private static final double SIGNATURE_SIMILARITY_CONTRIBUTION = 0.8;
     private static final double ORIGINAL_COST_CONTRIBUTION = 0.6;
+    private static final BiPredicate<Tuple2, Double> LABEL_MATCH = (vertices, cost) ->
+            cost < (1 - ORIGINAL_COST_CONTRIBUTION) * MAX_PENALTY;
 
-    private List<Tuple2<PDGVertex, PDGVertex>> alignedVertices = new ArrayList<>();
-    private Predicate<Tuple2<PDGVertex, PDGVertex>> isAlreadyAligned = tuple -> alignedVertices.contains(tuple);
-
-    public Array<Tuple2<PDGVertex, PDGVertex>> execute(PDGraph original, PDGraph suspect) {
+    /**
+     * Method that executes slightly modified version of GRAAL algorithm (which consider all possible alignments)
+     *
+     * @param original program dependency graph of original program
+     * @param suspect program dependency graph of suspect program
+     */
+    public Map<Tuple2, List<List<Tuple2<PDGVertex, PDGVertex>>>> execute(PDGraph original, PDGraph suspect) {
         Array<Tuple3<PDGVertex, PDGVertex, Double>> originalAligningCosts = graphAligner
                 .computeAligningCosts(SIGNATURE_SIMILARITY_CONTRIBUTION, original.getAsUndirectedGraphWithoutLoops(),
                         suspect.getAsUndirectedGraphWithoutLoops());
 
-        //Compute new cost that considers PDG vertex labels and filter the alignments that has label mismatch
-        Array<Tuple3<PDGVertex, PDGVertex, Double>> pdgAligningCosts = graphAligner
+        Map<Tuple2<PDGVertex, PDGVertex>, Double> pdgAligningCosts = graphAligner
                 .PDGAligningCosts(ORIGINAL_COST_CONTRIBUTION, originalAligningCosts)
-                .filter(tuple -> tuple._3 < (1 - ORIGINAL_COST_CONTRIBUTION) * MAX_PENALTY);
+                .filter(LABEL_MATCH);
 
-        Queue<Tuple3<PDGVertex, PDGVertex, Double>> nodesToAlign = new PriorityQueue<>(Comparator.comparingDouble(t ->t._3));
-        nodesToAlign.addAll(pdgAligningCosts.toJavaList());
-        Tuple2<PDGVertex, PDGVertex> seed = findSeed(nodesToAlign);
-        alignedVertices.add(seed);
+        java.util.Map<Tuple2, List<List<Tuple2<PDGVertex, PDGVertex>>>> alignmentsPerSeed = new java.util.HashMap<>();
+        Set<Tuple2<PDGVertex, PDGVertex>> seeds = findSeeds(pdgAligningCosts);
 
-        DoubleStream.of(1, 2, 3).forEach(radius -> {
-            Array<PDGVertex> uSphere = makeSpheres(seed._1, original, radius);
-            Array<PDGVertex> vSphere = makeSpheres(seed._2, suspect, radius);
-            alignSpheres(uSphere, vSphere);
-        });
+        for(Tuple2<PDGVertex, PDGVertex> seed : seeds) {
+            int sphereSize = 1;
+            int radius = 1;
+            List<List<Tuple2<PDGVertex, PDGVertex>>> alignments = Array.of(Array.of(seed).toJavaList()).toJavaList();
 
-        return Array.ofAll(alignedVertices);
+            while(sphereSize != 0) {
+                Array<PDGVertex> uSphere = makeSpheres(seed._1, original, radius);
+                Array<PDGVertex> vSphere = makeSpheres(seed._2, suspect, radius);
+                sphereSize = Math.min(uSphere.size(), vSphere.size());
+                if(sphereSize != 0) {
+                    List<List<Tuple2<PDGVertex, PDGVertex>>> temp = new ArrayList<>();
+                    for(List<Tuple2<PDGVertex, PDGVertex>> alignment : alignments) {
+                        temp.addAll(alignSpheres(uSphere, vSphere, pdgAligningCosts, alignment));
+                    }
+                    alignments.clear();
+                    alignments.addAll(temp);
+                }
+                radius++;
+            }
+            alignmentsPerSeed.put(seed, alignments);
+        }
+
+        return HashMap.ofAll(alignmentsPerSeed);
     }
 
-    private Tuple2<PDGVertex, PDGVertex> findSeed(Queue<Tuple3<PDGVertex, PDGVertex, Double>> nodesToAlign) {
-        return nodesToAlign.poll().apply((u, v, cost) -> Tuple.of(u, v));
+    /**
+     * utility method to find the seeds (pair of nodes) which has minimum aligning cost given the cost matrix that
+     * describes the cost of aligning every vertex from one PDG to every vertex in other PDG.
+     *
+     * @param aligningCosts cost matrix
+     * @return list of seeds that has minimum aligning cost
+     */
+    private Set<Tuple2<PDGVertex, PDGVertex>> findSeeds(Map<Tuple2<PDGVertex, PDGVertex>, Double>  aligningCosts) {
+        final double min = aligningCosts.minBy(comparingDouble(tuple -> tuple._2)).get()._2;
+        return aligningCosts.filterValues(cost -> cost.equals(min))
+                     .keySet();
     }
 
     private Array<PDGVertex> makeSpheres(PDGVertex vertex, PDGraph graph, double radius) {
         DijkstraShortestPath<PDGVertex, PDGEdge> dijkstraShortestPath =
-                new DijkstraShortestPath<>(graph.getAsUndirectedGraph(), radius);
+                new DijkstraShortestPath<>(graph.getAsUndirectedGraphWithoutLoops(), radius);
         final SingleSourcePaths<PDGVertex, PDGEdge> singleSourcePaths = dijkstraShortestPath.getPaths(vertex);
 
         return graph.getDefaultGraph().vertexSet().stream()
                 .filter(v -> !vertex.equals(v))
                 .map(sink -> Option.of(singleSourcePaths.getPath(sink)))
                 .filter(Option::isDefined)
-                .map(path -> path.get().getEndVertex())
+                .map(Option::get)
+                .filter(path -> path.getLength() == radius)
+                .map(GraphPath::getEndVertex)
                 .collect(Array.collector());
     }
 
-    private void alignSpheres(Array<PDGVertex> sphere1, Array<PDGVertex> sphere2) {
+    private List<List<Tuple2<PDGVertex, PDGVertex>>> alignSpheres(Array<PDGVertex> sphere1,
+                                                                  Array<PDGVertex> sphere2,
+                                                                  Map<Tuple2<PDGVertex, PDGVertex>, Double> costMap,
+                                                                  List<Tuple2<PDGVertex, PDGVertex>> currentAlignment) {
+        final Function<Tuple2<PDGVertex, PDGVertex>, Double> cost = tuple -> costMap.get(tuple).get();
+        Map<Tuple2<PDGVertex, Double>, Array<Tuple2<PDGVertex, PDGVertex>>> map  = sphere1
+                .crossProduct(sphere2).toArray()
+                .filter(costMap::containsKey)
+                .sortBy(cost)
+                .groupBy(tuple -> Tuple.of(tuple._1, cost.apply(tuple)));
 
+        List<List<Tuple2<PDGVertex, PDGVertex>>> alignments = new ArrayList<>();
+        findAlignments(map.values(), 0, alignments, currentAlignment);
+
+        return alignments;
     }
+
+    private void findAlignments(Seq<Array<Tuple2<PDGVertex, PDGVertex>>> values, int depth,
+                                List<List<Tuple2<PDGVertex, PDGVertex>>> alignments,
+                                List<Tuple2<PDGVertex, PDGVertex>> current) {
+        if(values.size() == depth) {
+            if(!alignments.contains(current)) alignments.add(current);
+            return;
+        }
+
+        Predicate<Tuple2<PDGVertex, PDGVertex>> isAlreadyAligned = tuple -> current.stream()
+                .flatMap(t -> Stream.of(t._1, t._2))
+                .anyMatch(v -> v.equals(tuple._1) || v.equals(tuple._2));
+
+        Array<Tuple2<PDGVertex, PDGVertex>> tuples = values.get(depth)
+                .filter(isAlreadyAligned.negate());
+
+        if(tuples.size() > 0) {
+            tuples.forEach(tuple -> {
+                List<Tuple2<PDGVertex, PDGVertex>> temp = Array.ofAll(current).append(tuple).toJavaList();
+                findAlignments(values, depth + 1, alignments, temp);
+            });
+        } else {
+            findAlignments(values, depth + 1, alignments, current);
+        }
+    }
+
 }
