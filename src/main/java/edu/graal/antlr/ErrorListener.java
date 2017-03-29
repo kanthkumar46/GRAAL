@@ -1,4 +1,4 @@
-package com.graal.antlr;
+package edu.graal.antlr;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.Parser;

@@ -1,11 +1,17 @@
-package com.graal.antlr;
+package edu.graal.antlr;
 
-import com.graal.antlr4.Java8BaseListener;
-import com.graal.antlr4.Java8Parser;
-import com.graal.graphs.types.*;
+import edu.graal.antlr4.Java8BaseListener;
+import edu.graal.antlr4.Java8Parser;
+import edu.graal.graphs.types.EdgeType;
+import edu.graal.graphs.types.ImmutablePDGEdge;
+import edu.graal.graphs.types.ImmutablePDGVertex;
+import edu.graal.graphs.types.PDGEdge;
+import edu.graal.graphs.types.PDGVertex;
+import edu.graal.graphs.types.VertexSubtype;
+import edu.graal.graphs.types.VertexType;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.util.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;

@@ -1,10 +1,10 @@
-package com.graal.utils;
+package edu.graal.utils;
 
-import com.jgraphtsupport.Edge;
-import com.jgraphtsupport.GraphUtils;
-import com.jgraphtsupport.ImmutableEdge;
-import com.jgraphtsupport.Vertex;
-import com.junitsupport.TestSetup;
+import edu.jgraphtsupport.Edge;
+import edu.jgraphtsupport.GraphUtils;
+import edu.jgraphtsupport.ImmutableEdge;
+import edu.jgraphtsupport.Vertex;
+import edu.junitsupport.TestSetup;
 import javaslang.Tuple3;
 import javaslang.collection.Array;
 import org.jgrapht.graph.SimpleGraph;

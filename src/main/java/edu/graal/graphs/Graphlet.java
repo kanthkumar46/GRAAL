@@ -1,9 +1,9 @@
-package com.graal.graphs;
+package edu.graal.graphs;
 
-import com.graal.graphs.types.GraphletEdge;
-import com.graal.graphs.types.GraphletVertex;
-import com.immutablessupport.styles.BuilderStyle;
-import com.jgraphtsupport.AbstractGraph;
+import edu.graal.graphs.types.GraphletEdge;
+import edu.graal.graphs.types.GraphletVertex;
+import edu.immutablessupport.styles.BuilderStyle;
+import edu.jgraphtsupport.AbstractGraph;
 import org.immutables.value.Value;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;

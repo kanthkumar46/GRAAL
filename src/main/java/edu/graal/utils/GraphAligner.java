@@ -1,10 +1,10 @@
-package com.graal.utils;
+package edu.graal.utils;
 
-import com.graal.graphs.types.PDGVertex;
-import com.graal.graphs.types.VertexType;
-import com.immutablessupport.styles.SingletonStyle;
-import com.jgraphtsupport.AbstractEdge;
-import com.jgraphtsupport.AbstractVertex;
+import edu.graal.graphs.types.PDGVertex;
+import edu.graal.graphs.types.VertexType;
+import edu.immutablessupport.styles.SingletonStyle;
+import edu.jgraphtsupport.AbstractEdge;
+import edu.jgraphtsupport.AbstractVertex;
 import javaslang.Function2;
 import javaslang.Function3;
 import javaslang.Tuple;
@@ -17,7 +17,7 @@ import org.jgrapht.UndirectedGraph;
 
 import java.util.Set;
 
-import static com.jgraphtsupport.GraphUtils.getMaxDegree;
+import static edu.jgraphtsupport.GraphUtils.getMaxDegree;
 import static java.lang.Math.abs;
 import static java.lang.Math.log;
 import static java.lang.Math.max;

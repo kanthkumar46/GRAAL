@@ -1,4 +1,4 @@
-package com.graal.graphs.types;
+package edu.graal.graphs.types;
 
 import javaslang.collection.Array;
 import javaslang.collection.Set;

@@ -1,6 +1,6 @@
-package com.graal.utils;
+package edu.graal.utils;
 
-import com.junitsupport.TestSetup;
+import edu.junitsupport.TestSetup;
 import org.junit.Assert;
 import org.junit.Test;
 

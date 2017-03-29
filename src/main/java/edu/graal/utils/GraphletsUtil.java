@@ -1,12 +1,12 @@
-package com.graal.utils;
+package edu.graal.utils;
 
-import com.graal.graphs.Graphlet;
-import com.graal.graphs.ImmutableGraphlet;
-import com.graal.graphs.types.GraphletEdge;
-import com.graal.graphs.types.GraphletVertex;
-import com.graal.graphs.types.ImmutableGraphletEdge;
-import com.graal.graphs.types.ImmutableGraphletVertex;
-import com.immutablessupport.styles.SingletonStyle;
+import edu.graal.graphs.Graphlet;
+import edu.graal.graphs.ImmutableGraphlet;
+import edu.graal.graphs.types.GraphletEdge;
+import edu.graal.graphs.types.GraphletVertex;
+import edu.graal.graphs.types.ImmutableGraphletEdge;
+import edu.graal.graphs.types.ImmutableGraphletVertex;
+import edu.immutablessupport.styles.SingletonStyle;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.collection.Array;

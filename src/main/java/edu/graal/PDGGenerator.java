@@ -1,14 +1,14 @@
-package com.graal;
+package edu.graal;
 
-import com.graal.antlr.PDGListener;
-import com.graal.antlr4.Java8Lexer;
-import com.graal.antlr4.Java8Parser;
-import com.graal.graphs.ImmutablePDGraph;
-import com.graal.graphs.types.PDGVertex;
-import com.graal.graphs.PDGraph;
-import com.graal.antlr.ErrorListener;
-import com.graal.graphs.types.PDGEdge;
-import com.immutablessupport.styles.SingletonStyle;
+import edu.graal.antlr.PDGListener;
+import edu.graal.antlr4.Java8Lexer;
+import edu.graal.antlr4.Java8Parser;
+import edu.graal.graphs.ImmutablePDGraph;
+import edu.graal.graphs.types.PDGVertex;
+import edu.graal.graphs.PDGraph;
+import edu.graal.antlr.ErrorListener;
+import edu.graal.graphs.types.PDGEdge;
+import edu.immutablessupport.styles.SingletonStyle;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;

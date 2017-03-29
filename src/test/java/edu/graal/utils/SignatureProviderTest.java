@@ -1,16 +1,13 @@
-package com.graal.utils;
+package edu.graal.utils;
 
-import com.graal.ImmutablePDGGenerator;
-import com.graal.PDGGenerator;
-import com.graal.graphs.PDGraph;
-import com.graal.graphs.types.PDGEdge;
-import com.graal.graphs.types.PDGVertex;
-import com.jgraphtsupport.*;
-import com.junitsupport.TestSetup;
+import edu.graal.ImmutablePDGGenerator;
+import edu.graal.PDGGenerator;
+import edu.graal.graphs.PDGraph;
+import edu.jgraphtsupport.*;
+import edu.junitsupport.TestSetup;
 import javaslang.collection.Array;
 import javaslang.collection.HashSet;
 import javaslang.collection.Set;
-import org.jgrapht.UndirectedGraph;
 import org.jgrapht.graph.SimpleGraph;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,7 +17,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import static com.junitsupport.TestUtils.getResourceStream;
+import static edu.junitsupport.TestUtils.getResourceStream;
 import static org.apache.commons.io.IOUtils.readLines;
 
 /**

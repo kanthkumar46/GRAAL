@@ -1,4 +1,4 @@
-package com.graal.graphs.types;
+package edu.graal.graphs.types;
 
 public enum EdgeType {
 	CTRL, DATA

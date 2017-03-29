@@ -1,10 +1,10 @@
-package com.graal;
+package edu.graal;
 
-import com.graal.graphs.PDGraph;
-import com.graal.graphs.types.PDGEdge;
-import com.graal.graphs.types.PDGVertex;
-import com.graal.utils.GraphAligner;
-import com.graal.utils.ImmutableGraphAligner;
+import edu.graal.graphs.PDGraph;
+import edu.graal.graphs.types.PDGEdge;
+import edu.graal.graphs.types.PDGVertex;
+import edu.graal.utils.GraphAligner;
+import edu.graal.utils.ImmutableGraphAligner;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.Tuple3;
@@ -25,7 +25,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.graal.graphs.types.VertexType.MAX_PENALTY;
+import static edu.graal.graphs.types.VertexType.MAX_PENALTY;
 import static java.util.Comparator.comparingDouble;
 
 /**

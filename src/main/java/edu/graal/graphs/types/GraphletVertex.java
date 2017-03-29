@@ -1,7 +1,7 @@
-package com.graal.graphs.types;
+package edu.graal.graphs.types;
 
-import com.immutablessupport.styles.TupleStyle;
-import com.jgraphtsupport.AbstractVertex;
+import edu.immutablessupport.styles.TupleStyle;
+import edu.jgraphtsupport.AbstractVertex;
 import org.immutables.value.Value;
 
 @Value.Immutable

@@ -1,7 +1,7 @@
-package com.graal.graphs.types;
+package edu.graal.graphs.types;
 
-import com.immutablessupport.styles.BuilderStyle;
-import com.jgraphtsupport.AbstractVertex;
+import edu.immutablessupport.styles.BuilderStyle;
+import edu.jgraphtsupport.AbstractVertex;
 import javaslang.collection.Set;
 import javaslang.control.Option;
 import org.immutables.value.Value;

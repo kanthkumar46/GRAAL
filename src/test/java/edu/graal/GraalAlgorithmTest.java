@@ -1,7 +1,7 @@
-package com.graal;
+package edu.graal;
 
-import com.graal.graphs.PDGraph;
-import com.junitsupport.TestSetup;
+import edu.graal.graphs.PDGraph;
+import edu.junitsupport.TestSetup;
 import org.junit.Test;
 
 /**

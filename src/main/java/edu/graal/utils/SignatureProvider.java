@@ -1,9 +1,9 @@
-package com.graal.utils;
+package edu.graal.utils;
 
-import com.immutablessupport.styles.SingletonStyle;
-import com.jgraphtsupport.AbstractEdge;
-import com.jgraphtsupport.AbstractVertex;
-import com.orca.algorithm.Orca;
+import edu.immutablessupport.styles.SingletonStyle;
+import edu.jgraphtsupport.AbstractEdge;
+import edu.jgraphtsupport.AbstractVertex;
+import edu.orca.algorithm.Orca;
 import javaslang.Function1;
 import org.immutables.value.Value;
 import org.jgrapht.UndirectedGraph;

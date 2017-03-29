@@ -1,10 +1,10 @@
-package com.graal.graphs;
+package edu.graal.graphs;
 
-import com.graal.graphs.types.PDGVertex;
-import com.graal.graphs.types.PDGEdge;
-import com.immutablessupport.styles.BuilderStyle;
-import com.jgraphtsupport.AbstractGraph;
-import com.jgraphtsupport.GraphUtils;
+import edu.graal.graphs.types.PDGVertex;
+import edu.graal.graphs.types.PDGEdge;
+import edu.immutablessupport.styles.BuilderStyle;
+import edu.jgraphtsupport.AbstractGraph;
+import edu.jgraphtsupport.GraphUtils;
 import org.immutables.value.Value;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
