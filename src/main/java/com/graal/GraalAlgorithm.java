@@ -13,13 +13,13 @@ import javaslang.collection.HashMap;
 import javaslang.collection.Map;
 import javaslang.collection.Seq;
 import javaslang.collection.Set;
-import javaslang.control.Option;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm.SingleSourcePaths;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -61,19 +61,25 @@ public class GraalAlgorithm {
             int sphereSize = 1;
             int radius = 1;
             List<List<Tuple2<PDGVertex, PDGVertex>>> alignments = Array.of(Array.of(seed).toJavaList()).toJavaList();
+            Seq<Array<Tuple2<PDGVertex, PDGVertex>>> sphereMap;
 
             while(sphereSize != 0) {
                 Array<PDGVertex> uSphere = makeSpheres(seed._1, original, radius);
                 Array<PDGVertex> vSphere = makeSpheres(seed._2, suspect, radius);
                 sphereSize = Math.min(uSphere.size(), vSphere.size());
+
                 if(sphereSize != 0) {
+                    sphereMap = mapSpheresAndSortByCost(uSphere, vSphere, pdgAligningCosts);
                     List<List<Tuple2<PDGVertex, PDGVertex>>> temp = new ArrayList<>();
+
                     for(List<Tuple2<PDGVertex, PDGVertex>> alignment : alignments) {
-                        temp.addAll(alignSpheres(uSphere, vSphere, pdgAligningCosts, alignment));
+                        temp.addAll(alignSpheres(sphereMap, alignment));
                     }
+
                     alignments.clear();
                     alignments.addAll(temp);
                 }
+
                 radius++;
             }
             alignmentsPerSeed.put(seed, alignments);
@@ -95,25 +101,42 @@ public class GraalAlgorithm {
                      .keySet();
     }
 
-    private Array<PDGVertex> makeSpheres(PDGVertex vertex, PDGraph graph, double radius) {
+    /**
+     * utility method to create a sphere (set of nodes which are exactly at the distance 'r' from vertex/node 'u')
+     * as described in GRAAL. This method leverages Dijkstra's Shortest Path algorithm to compute the sphere.
+     *
+     * @param u vertex 'u'
+     * @param graph input graph to find set of nodes
+     * @param radius distance 'r'
+     *
+     * @return Sphere; set of nodes that are exactly at the distance r from u.
+     */
+    private Array<PDGVertex> makeSpheres(PDGVertex u, PDGraph graph, double radius) {
         DijkstraShortestPath<PDGVertex, PDGEdge> dijkstraShortestPath =
                 new DijkstraShortestPath<>(graph.getAsUndirectedGraphWithoutLoops(), radius);
-        final SingleSourcePaths<PDGVertex, PDGEdge> singleSourcePaths = dijkstraShortestPath.getPaths(vertex);
+        final SingleSourcePaths<PDGVertex, PDGEdge> singleSourcePaths = dijkstraShortestPath.getPaths(u);
 
         return graph.getDefaultGraph().vertexSet().stream()
-                .filter(v -> !vertex.equals(v))
-                .map(sink -> Option.of(singleSourcePaths.getPath(sink)))
-                .filter(Option::isDefined)
-                .map(Option::get)
+                .filter(v -> !u.equals(v))
+                .map(singleSourcePaths::getPath)
+                .filter(Objects::nonNull)
                 .filter(path -> path.getLength() == radius)
                 .map(GraphPath::getEndVertex)
                 .collect(Array.collector());
     }
 
-    private List<List<Tuple2<PDGVertex, PDGVertex>>> alignSpheres(Array<PDGVertex> sphere1,
-                                                                  Array<PDGVertex> sphere2,
-                                                                  Map<Tuple2<PDGVertex, PDGVertex>, Double> costMap,
-                                                                  List<Tuple2<PDGVertex, PDGVertex>> currentAlignment) {
+    /**
+     * maps every vertex 'u' of sphere1 with every vertex 'v' in sphere2 to create vertex pairs, prunes the pairs
+     * the not present in pdg aligning cost map and sorts the pairs by cost of aligning them
+     *
+     * @param sphere1 sphere created out of PDG1
+     * @param sphere2 sphere created out of PDG2
+     * @param costMap PDG aligning cost map
+     * @return array of node/vertex pair created out of spheres and grouped by vertex 'u'
+     */
+    private Seq<Array<Tuple2<PDGVertex, PDGVertex>>> mapSpheresAndSortByCost(Array<PDGVertex> sphere1,
+                                                                             Array<PDGVertex> sphere2,
+                                                                             Map<Tuple2<PDGVertex, PDGVertex>, Double> costMap) {
         final Function<Tuple2<PDGVertex, PDGVertex>, Double> cost = tuple -> costMap.get(tuple).get();
         Map<Tuple2<PDGVertex, Double>, Array<Tuple2<PDGVertex, PDGVertex>>> map  = sphere1
                 .crossProduct(sphere2).toArray()
@@ -121,16 +144,22 @@ public class GraalAlgorithm {
                 .sortBy(cost)
                 .groupBy(tuple -> Tuple.of(tuple._1, cost.apply(tuple)));
 
+        return map.values();
+    }
+
+    private List<List<Tuple2<PDGVertex, PDGVertex>>> alignSpheres(Seq<Array<Tuple2<PDGVertex, PDGVertex>>> sphereMap,
+                                                                  List<Tuple2<PDGVertex, PDGVertex>> currentAlignment) {
+        int depth = 0;
         List<List<Tuple2<PDGVertex, PDGVertex>>> alignments = new ArrayList<>();
-        findAlignments(map.values(), 0, alignments, currentAlignment);
+        findAlignments(sphereMap, depth, alignments, currentAlignment);
 
         return alignments;
     }
 
-    private void findAlignments(Seq<Array<Tuple2<PDGVertex, PDGVertex>>> values, int depth,
+    private void findAlignments(Seq<Array<Tuple2<PDGVertex, PDGVertex>>> sphereMap, int depth,
                                 List<List<Tuple2<PDGVertex, PDGVertex>>> alignments,
                                 List<Tuple2<PDGVertex, PDGVertex>> current) {
-        if(values.size() == depth) {
+        if(sphereMap.size() == depth) {
             if(!alignments.contains(current)) alignments.add(current);
             return;
         }
@@ -139,16 +168,16 @@ public class GraalAlgorithm {
                 .flatMap(t -> Stream.of(t._1, t._2))
                 .anyMatch(v -> v.equals(tuple._1) || v.equals(tuple._2));
 
-        Array<Tuple2<PDGVertex, PDGVertex>> tuples = values.get(depth)
+        Array<Tuple2<PDGVertex, PDGVertex>> tuples = sphereMap.get(depth)
                 .filter(isAlreadyAligned.negate());
 
-        if(tuples.size() > 0) {
+        if(tuples.isEmpty()) {
+            findAlignments(sphereMap, depth + 1, alignments, current);
+        } else {
             tuples.forEach(tuple -> {
                 List<Tuple2<PDGVertex, PDGVertex>> temp = Array.ofAll(current).append(tuple).toJavaList();
-                findAlignments(values, depth + 1, alignments, temp);
+                findAlignments(sphereMap, depth + 1, alignments, temp);
             });
-        } else {
-            findAlignments(values, depth + 1, alignments, current);
         }
     }
 
