@@ -147,6 +147,15 @@ public class GraalAlgorithm {
         return map.values();
     }
 
+    /**
+     * given the map of spheres and an alignment, generates all possible alignments (occurs only if there are
+     * node/vertex pairs in the sphere map that has same aligning cost) by aligning the pair of nodes
+     * from the sphere map that are not already aligned in the current alignment.
+     *
+     * @param sphereMap array of node pair(u, v) {u from sphere1 and v from sphere2}
+     * @param currentAlignment list of node pairs that are already aligned
+     * @return list of alignments.
+     */
     private List<List<Tuple2<PDGVertex, PDGVertex>>> alignSpheres(Seq<Array<Tuple2<PDGVertex, PDGVertex>>> sphereMap,
                                                                   List<Tuple2<PDGVertex, PDGVertex>> currentAlignment) {
         int depth = 0;
