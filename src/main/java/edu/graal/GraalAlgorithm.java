@@ -40,7 +40,7 @@ public class GraalAlgorithm {
             cost < (1 - ORIGINAL_COST_CONTRIBUTION) * MAX_PENALTY;
 
     /**
-     * Method that executes slightly modified version of GRAAL algorithm (which consider all possible alignments)
+     * Method that executes slightly modified version of GRAAL algorithm (considers all possible alignments)
      *
      * @param original program dependency graph of original program
      * @param suspect program dependency graph of suspect program
