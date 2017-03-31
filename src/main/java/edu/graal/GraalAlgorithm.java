@@ -3,7 +3,9 @@ package edu.graal;
 import edu.graal.graphs.PDGraph;
 import edu.graal.graphs.types.PDGEdge;
 import edu.graal.graphs.types.PDGVertex;
+import edu.graal.utils.GraalResult;
 import edu.graal.utils.GraphAligner;
+import edu.graal.utils.ImmutableGraalResult;
 import edu.graal.utils.ImmutableGraphAligner;
 import javaslang.Tuple;
 import javaslang.Tuple2;
@@ -44,7 +46,7 @@ public class GraalAlgorithm {
      * @param original program dependency graph of original program
      * @param suspect program dependency graph of suspect program
      */
-    public Map<Tuple2, List<List<Tuple2<PDGVertex, PDGVertex>>>> execute(PDGraph original, PDGraph suspect) {
+    public GraalResult execute(PDGraph original, PDGraph suspect) {
         Map<Tuple2<PDGVertex, PDGVertex>, Double> originalAligningCosts = graphAligner
                 .computeAligningCosts(SIGNATURE_SIMILARITY_CONTRIBUTION, original.getAsUndirectedGraphWithoutLoops(),
                         suspect.getAsUndirectedGraphWithoutLoops());
@@ -84,7 +86,11 @@ public class GraalAlgorithm {
             alignmentsPerSeed.put(seed, alignments);
         }
 
-        return HashMap.ofAll(alignmentsPerSeed);
+        return ImmutableGraalResult.builder()
+                .alignments(HashMap.ofAll(alignmentsPerSeed))
+                .originalAligningCosts(originalAligningCosts)
+                .pdgAligningCosts(pdgAligningCosts)
+                .build();
     }
 
     /**
