@@ -7,7 +7,6 @@ import edu.graal.utils.GraphAligner;
 import edu.graal.utils.ImmutableGraphAligner;
 import javaslang.Tuple;
 import javaslang.Tuple2;
-import javaslang.Tuple3;
 import javaslang.collection.Array;
 import javaslang.collection.HashMap;
 import javaslang.collection.Map;
@@ -46,7 +45,7 @@ public class GraalAlgorithm {
      * @param suspect program dependency graph of suspect program
      */
     public Map<Tuple2, List<List<Tuple2<PDGVertex, PDGVertex>>>> execute(PDGraph original, PDGraph suspect) {
-        Array<Tuple3<PDGVertex, PDGVertex, Double>> originalAligningCosts = graphAligner
+        Map<Tuple2<PDGVertex, PDGVertex>, Double> originalAligningCosts = graphAligner
                 .computeAligningCosts(SIGNATURE_SIMILARITY_CONTRIBUTION, original.getAsUndirectedGraphWithoutLoops(),
                         suspect.getAsUndirectedGraphWithoutLoops());
 
