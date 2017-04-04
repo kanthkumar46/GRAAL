@@ -10,7 +10,6 @@ import edu.graal.utils.ImmutableGraphAligner;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.collection.Array;
-import javaslang.collection.HashMap;
 import javaslang.collection.Map;
 import javaslang.collection.Seq;
 import javaslang.collection.Set;
@@ -87,7 +86,7 @@ public class GraalAlgorithm {
         }
 
         return ImmutableGraalResult.builder()
-                .alignments(HashMap.ofAll(alignmentsPerSeed))
+                .setJavaMapAlignments(alignmentsPerSeed)
                 .originalAligningCosts(originalAligningCosts)
                 .pdgAligningCosts(pdgAligningCosts)
                 .build();
@@ -132,7 +131,8 @@ public class GraalAlgorithm {
 
     /**
      * maps every vertex 'u' of sphere1 with every vertex 'v' in sphere2 to create vertex pairs, prunes the pairs
-     * the not present in pdg aligning cost map and sorts the pairs by cost of aligning them
+     * not present in pdg aligning costMap, sorts the remaining pairs by cost of aligning them and finally groups
+     * the vertex pair having same source vertex and aligning cost.
      *
      * @param sphere1 sphere created out of PDG1
      * @param sphere2 sphere created out of PDG2

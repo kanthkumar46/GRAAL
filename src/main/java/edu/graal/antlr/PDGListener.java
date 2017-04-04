@@ -405,7 +405,7 @@ public class PDGListener extends Java8BaseListener {
         PDGVertex v = createVertex(VertexType.CALL, subtypes, ctx.getText(), null, expressionVariables);
         createDataEdges(v);
 
-        if (v.getAssignedVariable() != null)
+        if (v.getAssignedVariable().isDefined())
             lastAppearanceOfVariables.put(v.getAssignedVariable().get(), v);
 
         collectExpressionVars = false;
@@ -483,11 +483,11 @@ public class PDGListener extends Java8BaseListener {
     private PDGVertex createVertex(VertexType type, Set<VertexSubtype> subtypes, String lbl, String assignedVar,
                                 Set<String> refVars) {
         PDGVertex v = ImmutablePDGVertex.builder().vertexId(vertexCounter++)
-        .assignedVariable(assignedVar)
+        .setValueAssignedVariable(assignedVar)
         .type(type)
-        .subTypes(javaslang.collection.HashSet.ofAll(subtypes))
+        .setIterableSubTypes(subtypes)
         .label(lbl)
-        .readingVariables(javaslang.collection.HashSet.ofAll(refVars)).build();
+        .setIterableReadingVariables(refVars).build();
         vertices.get(currentMethod).add(v);
 
         if (!controlStack.isEmpty())

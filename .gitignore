@@ -1,5 +1,5 @@
 .idea/*
 *.iml
 target/
-d3/
+*Temp.java
 
