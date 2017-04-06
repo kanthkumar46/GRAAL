@@ -20,7 +20,6 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -36,8 +35,10 @@ public class GraalAlgorithm {
 
     private static final double SIGNATURE_SIMILARITY_CONTRIBUTION = 0.8;
     private static final double ORIGINAL_COST_CONTRIBUTION = 0.6;
-    private static final BiPredicate<Tuple2, Double> LABEL_MATCH = (vertices, cost) ->
-            cost < (1 - ORIGINAL_COST_CONTRIBUTION) * MAX_PENALTY;
+
+    public GraalResult execute(PDGraph original, PDGraph suspect) {
+        return execute(original, suspect, SIGNATURE_SIMILARITY_CONTRIBUTION, ORIGINAL_COST_CONTRIBUTION);
+    }
 
     /**
      * Method that executes slightly modified version of GRAAL algorithm (considers all possible alignments)
@@ -45,14 +46,15 @@ public class GraalAlgorithm {
      * @param original program dependency graph of original program
      * @param suspect program dependency graph of suspect program
      */
-    public GraalResult execute(PDGraph original, PDGraph suspect) {
+    public GraalResult execute(PDGraph original, PDGraph suspect, double signatureSimilarityFactor,
+                               double originalCostFactor) {
         Map<Tuple2<PDGVertex, PDGVertex>, Double> originalAligningCosts = graphAligner
-                .computeAligningCosts(SIGNATURE_SIMILARITY_CONTRIBUTION, original.getAsUndirectedGraphWithoutLoops(),
+                .computeAligningCosts(signatureSimilarityFactor, original.getAsUndirectedGraphWithoutLoops(),
                         suspect.getAsUndirectedGraphWithoutLoops());
 
         Map<Tuple2<PDGVertex, PDGVertex>, Double> pdgAligningCosts = graphAligner
-                .PDGAligningCosts(ORIGINAL_COST_CONTRIBUTION, originalAligningCosts)
-                .filter(LABEL_MATCH);
+                .PDGAligningCosts(originalCostFactor, originalAligningCosts)
+                .filter((vertices, cost) -> cost < (1 - originalCostFactor) * MAX_PENALTY);
 
         java.util.Map<Tuple2, List<List<Tuple2<PDGVertex, PDGVertex>>>> alignmentsPerSeed = new java.util.HashMap<>();
         Set<Tuple2<PDGVertex, PDGVertex>> seeds = findSeeds(pdgAligningCosts);
