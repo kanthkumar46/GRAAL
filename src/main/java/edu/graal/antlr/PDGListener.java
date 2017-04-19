@@ -178,8 +178,6 @@ public class PDGListener extends Java8BaseListener {
         isReadingAndWriting = !ctx.getText().equals("=");
     }
 
-
-
     @Override
     public void enterAssignment(Java8Parser.AssignmentContext ctx) {
         dealWitEnterAssignment(ctx);
@@ -317,36 +315,71 @@ public class PDGListener extends Java8BaseListener {
 
     private Set<VertexSubtype> getSubtypes(String text) {
         Set<VertexSubtype> result = new HashSet<>();
-        if (text.contains("<"))
+        if (text.contains("<")) {
             result.add(VertexSubtype.LT);
-        if (text.contains(">"))
+            result.add(VertexSubtype.COMP);
+        }
+        if (text.contains(">")) {
             result.add(VertexSubtype.GT);
-        if (text.contains("<="))
+            result.add(VertexSubtype.COMP);
+        }
+        if (text.contains("<=")) {
             result.add(VertexSubtype.LEQ);
-        if (text.contains(">="))
+            result.add(VertexSubtype.COMP);
+        }
+        if (text.contains(">=")) {
             result.add(VertexSubtype.GEQ);
-        if (text.contains("=="))
+            result.add(VertexSubtype.COMP);
+        }
+        if (text.contains("==")) {
             result.add(VertexSubtype.EQ);
-        if (text.contains("!="))
+            result.add(VertexSubtype.COMP);
+        }
+        if (text.contains("!=")) {
             result.add(VertexSubtype.INEQ);
-        if (text.contains("%"))
+            result.add(VertexSubtype.COMP);
+        }
+        if (text.contains("%")) {
             result.add(VertexSubtype.MOD);
-        if (text.contains("&&"))
+            result.add(VertexSubtype.MUL);
+        }
+        if (text.contains("&&")) {
             result.add(VertexSubtype.AND);
-        if (text.contains("||"))
+            result.add(VertexSubtype.LOGICAL);
+        }
+        if (text.contains("||")) {
             result.add(VertexSubtype.OR);
-        if (text.contains("++"))
+            result.add(VertexSubtype.LOGICAL);
+        }
+        if(text.contains("+")) {
+            result.add(VertexSubtype.ADD);
+        }
+        if (text.contains("++")) {
             result.add(VertexSubtype.INCR);
-        if (text.contains("--"))
+        }
+        if (text.contains("-")) {
+            result.add(VertexSubtype.SUB);
+        }
+        if (text.contains("--")) {
             result.add(VertexSubtype.DECR);
-        if (text.contains("+="))
+        }
+        if (text.contains("+=")) {
             result.add(VertexSubtype.SH_PLUS);
-        if (text.contains("-="))
+            result.add(VertexSubtype.ADD);
+        }
+        if (text.contains("-=")) {
             result.add(VertexSubtype.SH_MINUS);
-        if (text.contains(".print"))
+            result.add(VertexSubtype.SUB);
+        }
+        if (text.contains(".print")) {
             result.add(VertexSubtype.PRINT);
-        if (text.contains("(") && text.contains(")"))
+        }
+        if (text.contains("pow(")) {
+            result.add(VertexSubtype.MUL);
+        }
+        if (text.contains("(") && text.contains(")")) {
             result.add(VertexSubtype.CALL);
+        }
         return result;
     }
 
