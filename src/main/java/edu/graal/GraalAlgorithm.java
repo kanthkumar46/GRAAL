@@ -132,21 +132,21 @@ public class GraalAlgorithm {
     }
 
     /**
-     * maps every vertex 'u' of sphere1 with every vertex 'v' in sphere2 to create vertex pairs, prunes the pairs
+     * maps every vertex 'u' of uSphere with every vertex 'v' in vSphere to create vertex pairs, prunes the pairs
      * not present in pdg aligning costMap, sorts the remaining pairs by cost of aligning them and finally groups
      * the vertex pair having same source vertex and aligning cost.
      *
-     * @param sphere1 sphere created out of PDG1
-     * @param sphere2 sphere created out of PDG2
+     * @param uSphere sphere created around vertex 'u' in original PDG
+     * @param vSphere sphere created around vertex 'v' in suspect PDG
      * @param costMap PDG aligning cost map
      * @return array of node/vertex pair created out of spheres and grouped by vertex 'u'
      */
-    private Seq<Array<Tuple2<PDGVertex, PDGVertex>>> mapSpheresAndSortByCost(Array<PDGVertex> sphere1,
-                                                                             Array<PDGVertex> sphere2,
+    private Seq<Array<Tuple2<PDGVertex, PDGVertex>>> mapSpheresAndSortByCost(Array<PDGVertex> uSphere,
+                                                                             Array<PDGVertex> vSphere,
                                                                              Map<Tuple2<PDGVertex, PDGVertex>, Double> costMap) {
         final Function<Tuple2<PDGVertex, PDGVertex>, Double> cost = tuple -> costMap.get(tuple).get();
-        Map<Tuple2<PDGVertex, Double>, Array<Tuple2<PDGVertex, PDGVertex>>> map  = sphere1
-                .crossProduct(sphere2).toArray()
+        Map<Tuple2<PDGVertex, Double>, Array<Tuple2<PDGVertex, PDGVertex>>> map  = uSphere
+                .crossProduct(vSphere).toArray()
                 .filter(costMap::containsKey)
                 .sortBy(cost)
                 .groupBy(tuple -> Tuple.of(tuple._1, cost.apply(tuple)));
@@ -159,7 +159,7 @@ public class GraalAlgorithm {
      * node/vertex pairs in the sphere map that has same aligning cost) by aligning the pair of nodes
      * from the sphere map that are not already aligned in the current alignment.
      *
-     * @param sphereMap sequence/list of array containing node pair(u, v) {u from sphere1 and v from sphere2}, array
+     * @param sphereMap sequence/list of array containing node pair(u, v) {u from uSphere and v from vSphere}, array
      *                  contains node pairs which has same aligning cost and same source vertex 'u'
      *                  (@see GraalAlgorithm#mapSpheresAndSortByCost)
      * @param currentAlignment list of node pairs that are already aligned
