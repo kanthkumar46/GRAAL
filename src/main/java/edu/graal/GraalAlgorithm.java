@@ -159,7 +159,9 @@ public class GraalAlgorithm {
      * node/vertex pairs in the sphere map that has same aligning cost) by aligning the pair of nodes
      * from the sphere map that are not already aligned in the current alignment.
      *
-     * @param sphereMap array of node pair(u, v) {u from sphere1 and v from sphere2}
+     * @param sphereMap sequence/list of array containing node pair(u, v) {u from sphere1 and v from sphere2}, array
+     *                  contains node pairs which has same aligning cost and same source vertex 'u'
+     *                  (@see GraalAlgorithm#mapSpheresAndSortByCost)
      * @param currentAlignment list of node pairs that are already aligned
      * @return list of alignments.
      */
