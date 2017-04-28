@@ -25,7 +25,7 @@ import java.util.Stack;
 public class PDGListener extends Java8BaseListener {
     // TODO 0: Need to take the scope of variables into account!
 
-    private String currentMethod = "";
+    private String currentMethod = "GLOBAL";
 
     private Map<String, List<PDGVertex>> vertices = new HashMap<>();
     private Map<String, List<PDGEdge>> edges = new HashMap<>();
@@ -40,6 +40,8 @@ public class PDGListener extends Java8BaseListener {
 
     public PDGListener(int errorLineOffset) {
         this.errorLineOffset = errorLineOffset;
+        vertices.put(currentMethod, new ArrayList<>());
+        edges.put(currentMethod, new ArrayList<>());
     }
 
     // METHODS & PARAMETERS.
@@ -53,6 +55,7 @@ public class PDGListener extends Java8BaseListener {
         vertices.put(currentMethod, new ArrayList<>());
         edges.put(currentMethod, new ArrayList<>());
         lastAppearanceOfVariables.clear();
+        expressionVariables.clear();
         controlStack.clear();
     }
 

@@ -1,7 +1,9 @@
 package edu.graal;
 
 import edu.graal.graphs.PDGraph;
+import edu.graal.utils.GraalResult;
 import edu.junitsupport.TestSetup;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -40,7 +42,10 @@ public class GraalAlgorithmTest extends TestSetup{
         PDGraph original = pdgGenerator.createPDG(testcode1 , 0);
         PDGraph suspect = pdgGenerator.createPDG(testcode2, 0);
 
-        graalAlgorithm.execute(original, suspect);
+        GraalResult result = graalAlgorithm.execute(original, suspect);
+        int edgeCorrectness = result.findEdgeCorrectness(original.getAsUndirectedGraphWithoutLoops(),
+                suspect.getAsUndirectedGraphWithoutLoops(), result.findBestAlignment());
+        Assert.assertEquals(100, edgeCorrectness);
     }
 
     @Test
@@ -66,7 +71,10 @@ public class GraalAlgorithmTest extends TestSetup{
         PDGraph original = pdgGenerator.createPDG(testcode1 , 0);
         PDGraph suspect = pdgGenerator.createPDG(testcode2, 0);
 
-        graalAlgorithm.execute(original, suspect);
+        GraalResult result = graalAlgorithm.execute(original, suspect);
+        int edgeCorrectness = result.findEdgeCorrectness(original.getAsUndirectedGraphWithoutLoops(),
+                suspect.getAsUndirectedGraphWithoutLoops(), result.findBestAlignment());
+        Assert.assertEquals(50, edgeCorrectness);
     }
 
     @Test
@@ -114,6 +122,9 @@ public class GraalAlgorithmTest extends TestSetup{
         PDGraph original = pdgGenerator.createPDG(testcode1 , 0);
         PDGraph suspect = pdgGenerator.createPDG(testcode2, 0);
 
-        graalAlgorithm.execute(original, suspect);
+        GraalResult result = graalAlgorithm.execute(original, suspect);
+        int edgeCorrectness = result.findEdgeCorrectness(original.getAsUndirectedGraphWithoutLoops(),
+                suspect.getAsUndirectedGraphWithoutLoops(), result.findBestAlignment());
+        Assert.assertEquals(100, edgeCorrectness);
     }
 }

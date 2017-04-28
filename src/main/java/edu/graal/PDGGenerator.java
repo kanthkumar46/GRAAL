@@ -39,14 +39,12 @@ public abstract class PDGGenerator {
 
         PDGraph pdg = ImmutablePDGraph.of();
         for (String method : listener.getMethods()) {
-            if (listener.getVertices(method) == null || listener.getEdges(method) == null) {
-                continue;
-            }
             for (PDGVertex current : listener.getVertices(method)) {
                 pdg.addVertex(current, method);
             }
-            for (PDGEdge current : listener.getEdges(method))
+            for (PDGEdge current : listener.getEdges(method)) {
                 pdg.addEdge(current, method);
+            }
         }
         return pdg;
     }
