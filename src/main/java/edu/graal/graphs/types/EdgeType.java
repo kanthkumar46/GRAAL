@@ -1,5 +1,5 @@
 package edu.graal.graphs.types;
 
 public enum EdgeType {
-	CTRL, DATA
+	CTRL, DATA, CONN
 }

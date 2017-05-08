@@ -14,6 +14,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -252,7 +253,10 @@ public class PDGListener extends Java8BaseListener {
 
     private void dealWithIncrementsAndDecrements() {
         // TODO 0: This will not work for a[i] = ...
-        varAssigned = expressionVariables.iterator().next();
+        Iterator<String> it = expressionVariables.iterator();
+        if(it.hasNext()) {
+            varAssigned = it.next();
+        }
     }
 
     private void dealWitEnterAssignment(ParserRuleContext ctx) {

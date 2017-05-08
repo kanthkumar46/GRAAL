@@ -9,10 +9,11 @@ import static java.lang.Math.pow;
 public enum VertexType {
 	DECL(1),
 	ASSIGN(1),
-	CTRL(2), //CTRL_GRT, CTRL_LESS, CTRL_GRTEQL, CTRL_LESSEQL, CTRL_INEQL, CTRL_EQL, CTRL_MOD_EQL, CTRL_MOD_INEQL, CTRL_COMBINATION,
+	CTRL(2),
 	CALL(3),
 	RETURN(4),
-	BREAK(5);
+	BREAK(5),
+	CONN(6);
 
 	private int value;
 	VertexType(int value) {

@@ -18,6 +18,11 @@ public abstract class PDGraph extends AbstractGraph<PDGVertex, PDGEdge> {
 
 	private final Map<String, DirectedGraph<PDGVertex, PDGEdge>> methodGraphs = new HashMap<>();
 
+	@Value.Derived
+	public Map<String, DirectedGraph<PDGVertex, PDGEdge>> getMethodGraphs(){
+		return methodGraphs;
+	}
+
 	@Override
 	@Value.Default
 	public DirectedGraph<PDGVertex, PDGEdge> getDefaultGraph() {
