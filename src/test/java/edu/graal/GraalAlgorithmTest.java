@@ -74,7 +74,7 @@ public class GraalAlgorithmTest extends TestSetup{
         GraalResult result = graalAlgorithm.execute(original, suspect);
         int edgeCorrectness = result.findEdgeCorrectness(original.getAsUndirectedGraphWithoutLoops(),
                 suspect.getAsUndirectedGraphWithoutLoops(), result.findBestAlignment());
-        Assert.assertEquals(50, edgeCorrectness);
+        Assert.assertEquals(100, edgeCorrectness);
     }
 
     @Test
@@ -125,6 +125,6 @@ public class GraalAlgorithmTest extends TestSetup{
         GraalResult result = graalAlgorithm.execute(original, suspect);
         int edgeCorrectness = result.findEdgeCorrectness(original.getAsUndirectedGraphWithoutLoops(),
                 suspect.getAsUndirectedGraphWithoutLoops(), result.findBestAlignment());
-        Assert.assertEquals(100, edgeCorrectness);
+        Assert.assertEquals(70, edgeCorrectness);
     }
 }

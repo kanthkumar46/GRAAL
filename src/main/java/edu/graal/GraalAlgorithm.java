@@ -66,8 +66,8 @@ public class GraalAlgorithm {
             Seq<Array<Tuple2<PDGVertex, PDGVertex>>> sphereMap;
 
             while(sphereSize != 0) {
-                Array<PDGVertex> uSphere = makeSpheres(seed._1, original, radius);
-                Array<PDGVertex> vSphere = makeSpheres(seed._2, suspect, radius);
+                Array<PDGVertex> uSphere = makeSphere(seed._1, original, radius);
+                Array<PDGVertex> vSphere = makeSphere(seed._2, suspect, radius);
                 sphereSize = Math.min(uSphere.size(), vSphere.size());
 
                 if(sphereSize != 0) {
@@ -117,7 +117,7 @@ public class GraalAlgorithm {
      *
      * @return Sphere; set of nodes that are exactly at the distance r from u.
      */
-    private Array<PDGVertex> makeSpheres(PDGVertex u, PDGraph graph, double radius) {
+    private Array<PDGVertex> makeSphere(PDGVertex u, PDGraph graph, double radius) {
         DijkstraShortestPath<PDGVertex, PDGEdge> dijkstraShortestPath =
                 new DijkstraShortestPath<>(graph.getAsUndirectedGraphWithoutLoops(), radius);
         final SingleSourcePaths<PDGVertex, PDGEdge> singleSourcePaths = dijkstraShortestPath.getPaths(u);
