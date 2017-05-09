@@ -63,7 +63,7 @@ public abstract class PDGGenerator {
     }
 
     /**
-     * TODO: {@code createPDG} method create generates separate PDG for each method in the input program and this
+     * TODO: {@code createPDG} method generates separate PDG for each method in the input program and this
      * method connects all the PDGs to construct a single PDG by choosing a vertex from each PDG that has zero
      * in-degree and max out-degree.
      * Either this method or PDGListener class needs to be updated to connect the vertices the represents function call
