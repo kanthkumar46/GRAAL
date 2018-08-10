@@ -6,14 +6,15 @@ import javaslang.collection.Set;
 import static java.lang.Math.max;
 import static java.lang.Math.pow;
 
-public enum VertexType {
+public enum VertexType implements IVertexType {
 	DECL(1),
 	ASSIGN(1),
 	CTRL(2),
 	CALL(3),
 	RETURN(4),
 	BREAK(5),
-	CONN(6);
+	CONTINUE(6),
+	CONN(7);
 
 	private int value;
 	VertexType(int value) {
@@ -26,7 +27,7 @@ public enum VertexType {
 	public static double getPenalty(PDGVertex v1, PDGVertex v2) {
 		double totalPenalty = 0.0;
 
-		if(v1.getType().value != v2.getType().value) {
+		if(v1.getType().getValue() != v2.getType().getValue()) {
 			totalPenalty += MAX_PENALTY;
 		}
 		else if((v1.getType().equals(DECL) && v2.getType().equals(ASSIGN)) ||
@@ -34,8 +35,8 @@ public enum VertexType {
 			totalPenalty += PENALTY_CONSTANT;
 		}
 
-		Set<VertexSubtype> v1UniqueSubTypes = v1.subTypes().diff(v2.subTypes());
-		Set<VertexSubtype> v2UniqueSubTypes = v2.subTypes().diff(v1.subTypes());
+		Set<? extends IVertexSubtype> v1UniqueSubTypes = v1.subTypes().diff(v2.subTypes());
+		Set<? extends IVertexSubtype> v2UniqueSubTypes = v2.subTypes().diff(v1.subTypes());
 
 		if(v1UniqueSubTypes.isEmpty() || v2UniqueSubTypes.isEmpty()) {
 			totalPenalty += pow(max(v1UniqueSubTypes.size(), v2UniqueSubTypes.size()), 2) * PENALTY_CONSTANT;
@@ -48,4 +49,8 @@ public enum VertexType {
 		return totalPenalty;
 	}
 
+	@Override
+	public int getValue() {
+		return value;
+	}
 }

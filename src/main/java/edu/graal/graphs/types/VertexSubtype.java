@@ -7,7 +7,7 @@ import javaslang.control.Option;
 
 import static edu.graal.graphs.types.VertexType.PENALTY_CONSTANT;
 
-public enum VertexSubtype {
+public enum VertexSubtype implements IVertexSubtype {
 	LT, GT, LEQ, GEQ, EQ, INEQ, MOD, AND, OR, INCR, DECR, SH_PLUS, SH_MINUS, PRINT, CALL, ADD, SUB, MUL, COMP, LOGICAL;
 
 	private static HashMap<Tuple2, Double> penaltyMap = penalty();

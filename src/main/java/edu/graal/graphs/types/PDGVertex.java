@@ -9,8 +9,8 @@ import org.immutables.value.Value;
 @Value.Immutable
 @BuilderStyle
 public abstract class PDGVertex implements AbstractVertex {
-	public abstract VertexType getType();
-    public abstract Set<VertexSubtype> subTypes();
+	public abstract IVertexType getType();
+    public abstract Set<IVertexSubtype> subTypes();
 	public abstract String getLabel();
 	public abstract Set<String> getReadingVariables();
 	public abstract Option<String> getAssignedVariable();
