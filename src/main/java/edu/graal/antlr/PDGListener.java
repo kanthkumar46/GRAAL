@@ -3,6 +3,7 @@ package edu.graal.antlr;
 import edu.graal.antlr4.Java8BaseListener;
 import edu.graal.antlr4.Java8Parser;
 import edu.graal.graphs.types.EdgeType;
+import edu.graal.graphs.types.IVertexSubtype;
 import edu.graal.graphs.types.ImmutablePDGEdge;
 import edu.graal.graphs.types.ImmutablePDGVertex;
 import edu.graal.graphs.types.PDGEdge;
@@ -266,7 +267,7 @@ public class PDGListener extends Java8BaseListener {
     private void dealWitExitAssignment(ParserRuleContext ctx) {
         if (isReadingAndWriting)
             expressionVariables.add(varAssigned);
-        Set<VertexSubtype> subtypes = getSubtypes(ctx.getText());
+        Set<IVertexSubtype> subtypes = getSubtypes(ctx.getText());
         PDGVertex v = createVertex(VertexType.ASSIGN, subtypes, ctx.getText(), varAssigned, expressionVariables);
 
         if (!forUpdate) {
@@ -308,7 +309,7 @@ public class PDGListener extends Java8BaseListener {
     }
 
     private PDGVertex dealWithExitCondition(ParserRuleContext ctx) {
-        Set<VertexSubtype> subtypes = getSubtypes(ctx.getText());
+        Set<IVertexSubtype> subtypes = getSubtypes(ctx.getText());
         PDGVertex v = createVertex(VertexType.CTRL, subtypes, ctx.getText(), null, expressionVariables);
         createDataEdges(v);
 
@@ -320,8 +321,8 @@ public class PDGListener extends Java8BaseListener {
         return v;
     }
 
-    private Set<VertexSubtype> getSubtypes(String text) {
-        Set<VertexSubtype> result = new HashSet<>();
+    private Set<IVertexSubtype> getSubtypes(String text) {
+        Set<IVertexSubtype> result = new HashSet<>();
         if (text.contains("<")) {
             result.add(VertexSubtype.LT);
             result.add(VertexSubtype.COMP);
@@ -441,7 +442,7 @@ public class PDGListener extends Java8BaseListener {
 
     @Override
     public void exitMethodInvocation(Java8Parser.MethodInvocationContext ctx) {
-        Set<VertexSubtype> subtypes = getSubtypes(ctx.getText());
+        Set<IVertexSubtype> subtypes = getSubtypes(ctx.getText());
         PDGVertex v = createVertex(VertexType.CALL, subtypes, ctx.getText(), null, expressionVariables);
         createDataEdges(v);
 
@@ -460,7 +461,7 @@ public class PDGListener extends Java8BaseListener {
 
     @Override
     public void exitReturnStatement(Java8Parser.ReturnStatementContext ctx) {
-        Set<VertexSubtype> subtypes = getSubtypes(ctx.getText());
+        Set<IVertexSubtype> subtypes = getSubtypes(ctx.getText());
         PDGVertex v = createVertex(VertexType.RETURN, subtypes, ctx.getText(), null, expressionVariables);
         createDataEdges(v);
 
@@ -471,7 +472,7 @@ public class PDGListener extends Java8BaseListener {
     // BREAK
     @Override
     public void enterBreakStatement(Java8Parser.BreakStatementContext ctx) {
-        Set<VertexSubtype> subtypes = getSubtypes(ctx.getText());
+        Set<IVertexSubtype> subtypes = getSubtypes(ctx.getText());
         createVertex(VertexType.BREAK, subtypes, ctx.getText(), null, new HashSet<>());
     }
 
@@ -520,7 +521,7 @@ public class PDGListener extends Java8BaseListener {
 
     // AUX
 
-    private PDGVertex createVertex(VertexType type, Set<VertexSubtype> subtypes, String lbl, String assignedVar,
+    private PDGVertex createVertex(VertexType type, Set<IVertexSubtype> subtypes, String lbl, String assignedVar,
                                 Set<String> refVars) {
         PDGVertex v = ImmutablePDGVertex.builder().vertexId(vertexCounter++)
         .setValueAssignedVariable(assignedVar)
