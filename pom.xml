@@ -6,7 +6,7 @@
 
     <groupId>edu.rit.capstone</groupId>
     <artifactId>graphaligner</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
     <properties>
         <commons-lang3.version>3.5</commons-lang3.version>
         <commons-io.version>2.5</commons-io.version>
@@ -113,7 +113,7 @@
         <repository>
             <id>github</id>
             <name>GitHub Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/kanthkumar46/ORCA</url>
+            <url>https://maven.pkg.github.com/kanthkumar46/GRAAL</url>
         </repository>
     </distributionManagement>
 
