@@ -10,9 +10,9 @@ import static edu.graal.graphs.types.VertexType.PENALTY_CONSTANT;
 public enum VertexSubtype implements IVertexSubtype {
 	LT, GT, LEQ, GEQ, EQ, INEQ, MOD, AND, OR, INCR, DECR, SH_PLUS, SH_MINUS, PRINT, CALL, ADD, SUB, MUL, COMP, LOGICAL;
 
-	private static HashMap<Tuple2, Double> penaltyMap = penalty();
-	private static HashMap<Tuple2, Double> penalty() {
-		java.util.Map<Tuple2, Double> map = new java.util.HashMap<>();
+	private static HashMap<Tuple2<? extends IVertexSubtype, ? extends IVertexSubtype>, Double> penaltyMap = penalty();
+	private static HashMap<Tuple2<? extends IVertexSubtype, ? extends IVertexSubtype>, Double> penalty() {
+		java.util.Map<Tuple2<? extends IVertexSubtype, ? extends IVertexSubtype>, Double> map = new java.util.HashMap<>();
 
 		map.put(Tuple.of(LT, GT), 0.5);
 		map.put(Tuple.of(LT, LEQ), 0.25);
@@ -77,7 +77,7 @@ public enum VertexSubtype implements IVertexSubtype {
 		return HashMap.ofAll(map);
 	}
 
-	public static Double getPenalty(Tuple2 vertexSubtypeTuple) {
+	public static Double getPenalty(Tuple2<? extends IVertexSubtype, ? extends IVertexSubtype> vertexSubtypeTuple) {
 		Option<Double> penalty = penaltyMap.get(vertexSubtypeTuple);
 		if(penalty.isDefined()) {
 			return penalty.get();
@@ -87,4 +87,7 @@ public enum VertexSubtype implements IVertexSubtype {
 		}
 	}
 
+	public static void addPenalty(IVertexSubtype v1, IVertexSubtype v2, double value) {
+		penaltyMap.put(Tuple.of(v1, v2), value);
+	}
 }
