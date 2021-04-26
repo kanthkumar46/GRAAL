@@ -9,7 +9,7 @@
     <version>1.2-SNAPSHOT</version>
     <properties>
         <commons-lang3.version>3.5</commons-lang3.version>
-        <commons-io.version>2.5</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <immutables.version>2.4.3</immutables.version>
         <javaslang.version>2.1.0-alpha</javaslang.version>
         <antlr4.version>4.6</antlr4.version>
