@@ -16,7 +16,7 @@
         <libraries-support.version>1.0</libraries-support.version>
         <orbitcounter.version>1.1</orbitcounter.version>
         <junit.version>4.13.1</junit.version>
-        <log4j.version>2.3</log4j.version>
+        <log4j.version>2.15.0</log4j.version>
     </properties>
 
     <dependencies>
